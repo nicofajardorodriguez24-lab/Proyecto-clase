@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class Medicamento {
 
-    // ---------------- Atributos ----------------
+  
     private Comprador comprador;
     private String tratamiento;
     private Receta receta;
@@ -18,10 +18,10 @@ public class Medicamento {
     private String indicacion;
     private Observacion[] observacion;
 
-    // 🔹 Atributo que no se puede cambiar
-    private final String codigoUnico = "MED-001"; // final, constante
+  
+    private final String codigoUnico = "MED-001"; 
 
-    // ---------------- Constructores ----------------
+    
     public Medicamento() { }
 
     public Medicamento(Comprador comprador, String tratamiento, Receta receta, Proveedor proveedor, String sistema,
@@ -41,7 +41,7 @@ public class Medicamento {
         this.observacion = observacion;
     }
 
-    // ---------------- Getters y Setters ----------------
+   
     public Comprador getComprador() { return comprador; }
     public void setComprador(Comprador comprador) { this.comprador = comprador; }
 
@@ -78,20 +78,20 @@ public class Medicamento {
     public Observacion[] getObservacion() { return observacion; }
     public void setObservacion(Observacion[] observacion2) { this.observacion = observacion2; }
 
-    public String getCodigoUnico() { return codigoUnico; } // getter para atributo final
+    public String getCodigoUnico() { return codigoUnico; } 
 
-    // ---------------- MÉTODOS ----------------
+   
     public int calcularAntiguedad() {
         int anioActual = java.time.Year.now().getValue();
         return anioActual - this.fechaOrigen;
     }
 
     public String calcularDosis(double pesoPaciente) {
-        double dosis = pesoPaciente * 0.1;  // 0.1 mg por kg
+        double dosis = pesoPaciente * 0.1;  
         return "Dosis recomendada: " + dosis + " mg";
     }
 
-    // 🔹 Método que no se puede sobrescribir
+  
     public Medicamento obtenerMedicamentoEjemplo() {
         Medicamento med = new Medicamento();
         med.setTratamiento("Medicamento genérico (ejemplo)");
@@ -118,3 +118,4 @@ public class Medicamento {
                 "\n}";
     }
 }
+
