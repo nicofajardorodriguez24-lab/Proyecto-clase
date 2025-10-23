@@ -1,126 +1,201 @@
-package co.edu.poli.actividad3.vista;
+package Co.edu.poli.actividad1.vista;
 
-import co.edu.poli.actividad3.model.*;
-import co.edu.poli.actividad4.servicios.*;   // CRUD
+import Co.edu.poli.actividad1.model.*;
+import Co.edu.poli.actividad1.servicios.*;
 
-/**
- * Clase Cliente que sirve como punto de entrada para la aplicación de gestión de medicamentos.
- * Esta clase realiza lo siguiente:
- * <ul>
- *     <li>Creación de objetos base como Comprador, Proveedor, Receta y Presentación.</li>
- *     <li>Demostración de herencia y polimorfismo con Medicamento, Analgésico y MedicamentoNatural.</li>
- *     <li>Cálculo de dosis y antigüedad de los medicamentos.</li>
- *     <li>Pruebas de operaciones CRUD utilizando la interfaz OperacionesCRUD.</li>
- * </ul>
- * 
- * @author Nicolas Fajardo
- */
+import java.util.Scanner;
+
 public class Cliente {
 
-    /**
-     * Método principal que ejecuta la aplicación.
-     * @param args Argumentos de línea de comandos (no utilizados).
-     */
+    private static final Scanner sc = new Scanner(System.in);
+    private static final ImplOperacionesCRUD crud = new ImplOperacionesCRUD();
+
     public static void main(String[] args) {
 
-        // ================== CREACIÓN DE OBJETOS BASE ==================
-        Comprador comprador = new Comprador("C001", "Necesidad médica", "Ana Gómez", 35,
-                "ana@email.com", "Bogotá", "3001234567", null);
+        cargarMedicamentosDesdeArchivo();
 
-        Pais pais = new Pais("PA001", "Colombia");
-        Proveedor proveedor = new Proveedor("900123", "Nacional", "Medicamentos", "ISO9001", pais);
+        int opcion;
 
-        Receta receta = new Receta("R001", 3, 70, "Paracetamol", "Natural", "Oral", 2023);
+        do {
+            mostrarMenu();
 
-        Presentacion[] presentaciones = {
-                new Presentacion("PR001", "Caja", 20, "Tabletas recubiertas", "Blíster",
-                        "LabPharma", "2025-06-10", 101),
-                new Presentacion("PR002", "Frasco", 1, "Extracto líquido 100ml", "Vidrio",
-                        "MedNatural", "2026-01-01", 102)
-        };
+            try {
+                opcion = Integer.parseInt(sc.nextLine());
 
-        Observacion[] observaciones = {
-                new Observacion("O001", "Dr. Juan Pérez", "Mantener en lugar fresco", 2024),
-                new Observacion("O002", "Enfermera Ruiz", "No administrar con alcohol", 2024)
-        };
+                switch (opcion) {
+                    case 1 -> crearMedicamento();
+                    case 2 -> leerMedicamento();
+                    case 3 -> actualizarMedicamento();
+                    case 4 -> eliminarMedicamento();
+                    case 5 -> listarMedicamentos();
+                    case 6 -> guardarMedicamentosEnArchivo();
+                    case 7 -> cargarMedicamentosDesdeArchivo();
+                    case 0 -> {
+                        guardarMedicamentosEnArchivo();
+                        System.out.println("Saliendo del programa...");
+                        return;
+                    }
+                    default -> System.out.println("Opción inválida.");
+                }
 
-        // 🔹 Creación del medicamento principal
-        Medicamento medicamento = new Analgesico(
-                comprador, "Analgésico y antipirético", receta, proveedor, "Nervioso Central",
-                202310, 2022, 150.5, "INVIMA-2023-001", presentaciones,
-                "Indicado para dolor y fiebre", observaciones, "Dolor general", "M001"
-        );
-
-        System.out.println("=== Información del medicamento principal ===");
-        System.out.println(medicamento);
-        System.out.println("Antigüedad del medicamento: " + medicamento.calcularAntiguedad() + " años");
-        System.out.println("Cálculo de dosis: " + medicamento.calcularDosis(70));
-
-        // ================== POLIMORFISMO ==================
-        MedicamentoNatural natural1 = new MedicamentoNatural(
-                null, "Infusión de manzanilla", null, null,
-                null, 0, 2021, 0, null, null,
-                null, null, "Manzanilla", "M002"
-        );
-
-        MedicamentoNatural natural2 = new MedicamentoNatural(
-                null, "Extracto de valeriana", null, null,
-                null, 0, 2020, 0, null, null,
-                null, null, "Valeriana", "M003"
-        );
-
-        Analgesico analgesico = new Analgesico(
-                null, "Ibuprofeno 400mg", null, null,
-                null, 0, 2022, 0, null, null,
-                null, null, "Dolor muscular", "M004"
-        );
-
-        System.out.println("\n=== Ejemplo de polimorfismo ===");
-        System.out.println("Dosis natural1: " + natural1.calcularDosis(70));
-        System.out.println("Dosis analgesico: " + analgesico.calcularDosis(70));
-
-        // ================== ARREGLO DE POLIMORFISMO ==================
-        Medicamento[] medicamentos = new Medicamento[5];
-        medicamentos[0] = natural1;
-        medicamentos[1] = natural2;
-        medicamentos[2] = analgesico;
-
-        System.out.println("\n=== Cálculo de dosis por polimorfismo en arreglo ===");
-        for (Medicamento med : medicamentos) {
-            if (med != null) {
-                System.out.println(med.getTratamiento() + " -> " + med.calcularDosis(70));
-            } else {
-                System.out.println("Vacío");
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Ingrese un número.");
             }
+
+        } while (true);
+    }
+
+    private static void mostrarMenu() {
+        System.out.println("\n--- Menú CRUD de Medicamentos ---");
+        System.out.println("1. Crear medicamento (guardar en memoria)");
+        System.out.println("2. Leer medicamento por ID");
+        System.out.println("3. Actualizar medicamento");
+        System.out.println("4. Eliminar medicamento");
+        System.out.println("5. Listar medicamentos");
+        System.out.println("6. Guardar medicamentos en archivo (.dat)");
+        System.out.println("7. Cargar medicamentos desde archivo (.dat)");
+        System.out.println("0. Salir");
+        System.out.print("Seleccione una opción: ");
+    }
+
+    private static void crearMedicamento() {
+        try {
+            System.out.print("ID: ");
+            String id = sc.nextLine();
+
+            System.out.print("Tratamiento: ");
+            String tratamiento = sc.nextLine();
+
+            System.out.print("Inventario: ");
+            double inventario = Double.parseDouble(sc.nextLine());
+
+            System.out.print("Tipo (1=Natural, 2=Analgésico): ");
+            int tipo = Integer.parseInt(sc.nextLine());
+
+            Receta receta = new Receta("R01", 1, 1, "MedicamentoX", "Desconocido", "Oral", 2023);
+            Comprador comprador = new Comprador("C001", "Necesidad genérica", "Nombre genérico", 30,
+                    "email@correo.com", "Ciudad", "0000000000", receta);
+            Pais pais = new Pais("P001", "País genérico");
+            Proveedor proveedor = new Proveedor("0001", "Origen genérico", "Producto genérico", "CertificadoX", pais);
+            Presentacion[] presentaciones = {};
+            Observacion[] observaciones = {};
+
+            Medicamento nuevo;
+
+            if (tipo == 1) {
+                nuevo = new MedicamentoNatural(comprador, tratamiento, receta, proveedor, "General",
+                        1000, 2020, inventario, "REG-001", presentaciones,
+                        "Genérico natural", observaciones, "Planta genérica", id);
+            } else if (tipo == 2) {
+                nuevo = new Analgesico(comprador, tratamiento, receta, proveedor, "General",
+                        1001, 2020, inventario, "REG-002", presentaciones,
+                        "Genérico analgésico", observaciones, "Dolor genérico", id);
+            } else {
+                System.out.println("Tipo inválido. Solo 1 o 2.");
+                return;
+            }
+
+            crud.create(nuevo);
+            System.out.println("\nMedicamento creado correctamente con los siguientes datos:");
+            imprimirResumenMedicamentoCreado(nuevo);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Error en formato numérico. Intenta nuevamente.");
+        }
+    }
+
+    private static void leerMedicamento() {
+        System.out.print("ID a buscar: ");
+        String id = sc.nextLine();
+        Medicamento m = crud.read(id);
+        if (m != null) {
+            imprimirResumenMedicamentoCreado(m);
+        } else {
+            System.out.println("No se encontró ningún medicamento con ese ID.");
+        }
+    }
+
+    private static void actualizarMedicamento() {
+        System.out.print("ID del medicamento a actualizar: ");
+        String id = sc.nextLine();
+
+        Medicamento existente = crud.read(id);
+        if (existente == null) {
+            System.out.println("Medicamento no encontrado.");
+            return;
         }
 
-        // ================== CRUD ==================
-        System.out.println("\n=== Pruebas CRUD ===");
-        OperacionesCRUD crud = new ImplOperacionesCRUD();
+        try {
+            System.out.print("Nuevo inventario: ");
+            double nuevoInventario = Double.parseDouble(sc.nextLine());
 
-        crud.create(medicamento);
-        crud.create(natural1);
-        crud.create(natural2);
-        crud.create(analgesico);
+            existente.setInventario(nuevoInventario);
+            crud.update(id, existente);
 
-        crud.listar();
+            System.out.println("Medicamento actualizado correctamente:");
+            imprimirResumenMedicamentoCreado(existente);
 
-        System.out.println("\nLeyendo medicamento con ID M002:");
-        System.out.println(crud.read("M002"));
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida. Debes ingresar un número.");
+        }
+    }
 
-        System.out.println("\nActualizando medicamento con ID M003:");
-        Medicamento actualizado = new MedicamentoNatural(
-                null, "Valeriana 500mg cápsulas", null, null,
-                null, 0, 2020, 0, null, null,
-                null, null, "Valeriana", "M003"
-        );
-        crud.update("M003", actualizado);
+    private static void eliminarMedicamento() {
+        System.out.print("ID a eliminar: ");
+        String id = sc.nextLine();
+        crud.delete(id);
+        System.out.println("Medicamento eliminado si existía.");
+    }
 
-        crud.listar();
+    private static void listarMedicamentos() {
+        Medicamento[] lista = crud.readAll();
+        if (lista == null || lista.length == 0) {
+            System.out.println("No hay medicamentos registrados.");
+        } else {
+            for (Medicamento m : lista) {
+                if (m != null) {
+                    System.out.println("--- Medicamento ---");
+                    imprimirMedicamentoListado(m);
+                }
+            }
+        }
+    }
 
-        System.out.println("\nEliminando medicamento con ID M001:");
-        crud.delete("M001");
+    private static void guardarMedicamentosEnArchivo() {
+        if (crud.serializar()) {
+            System.out.println("Medicamentos guardados correctamente en archivo.");
+        } else {
+            System.out.println("Error al guardar medicamentos en archivo.");
+        }
+    }
 
-        crud.listar();
+    private static void cargarMedicamentosDesdeArchivo() {
+        if (crud.deserializar()) {
+            System.out.println("Medicamentos cargados correctamente desde archivo.");
+        } else {
+            System.out.println("No se encontraron datos previos. Iniciando con lista vacía.");
+        }
+    }
+
+    private static void imprimirResumenMedicamentoCreado(Medicamento m) {
+        String tipo = (m instanceof MedicamentoNatural) ? "Natural" :
+                      (m instanceof Analgesico) ? "Analgésico" : "Desconocido";
+
+        System.out.println("→ ID: " + m.getCodigoUnico());
+        System.out.println("→ Tratamiento: " + m.getTratamiento());
+        System.out.println("→ Inventario: " + m.getInventario());
+        System.out.println("→ Tipo: " + tipo);
+        System.out.println();
+    }
+
+    private static void imprimirMedicamentoListado(Medicamento m) {
+        String tipo = (m instanceof MedicamentoNatural) ? "Natural" :
+                      (m instanceof Analgesico) ? "Analgésico" : "Desconocido";
+
+        System.out.println("→ Código único: " + m.getCodigoUnico());
+        System.out.println("→ Tratamiento: " + m.getTratamiento());
+        System.out.println("→ Inventario: " + m.getInventario());
+        System.out.println("→ Tipo: " + tipo);
+        System.out.println();
     }
 }
