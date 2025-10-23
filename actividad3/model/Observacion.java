@@ -1,4 +1,6 @@
-package co.edu.poli.actividad3.model;
+package Co.edu.poli.actividad1.model;
+
+import java.io.Serializable;
 
 /**
  * Clase final que representa una observación asociada a un medicamento.
@@ -7,11 +9,13 @@ package co.edu.poli.actividad3.model;
  * con el fin de registrar notas médicas o comentarios relevantes.
  * </p>
  * 
- * 🔹 Al ser final, no puede ser heredada.
+ *  Al ser final, no puede ser heredada.
  * 
  * @author Nicolas
  */
-public final class Observacion {
+public final class Observacion implements Serializable {
+
+    private static final long serialVersionUID = 1L; // Opcional: control de versión
     
     /** Identificador único de la observación */
     private String serial;
@@ -42,41 +46,16 @@ public final class Observacion {
     }
 
     //  Getters & Setters 
-    
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getAutor() {
-        return autor;
-    }
-
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public int getFechaOrigen() {
-        return fechaOrigen;
-    }
-
-    public void setFechaOrigen(int fechaOrigen) {
-        this.fechaOrigen = fechaOrigen;
-    }
+    public String getSerial() { return serial; }
+    public void setSerial(String serial) { this.serial = serial; }
+    public String getAutor() { return autor; }
+    public void setAutor(String autor) { this.autor = autor; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public int getFechaOrigen() { return fechaOrigen; }
+    public void setFechaOrigen(int fechaOrigen) { this.fechaOrigen = fechaOrigen; }
 
     // toString 
-    
     @Override
     public String toString() {
         return "Observacion [serial=" + serial + 
