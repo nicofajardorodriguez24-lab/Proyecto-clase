@@ -1,4 +1,6 @@
-package co.edu.poli.actividad3.model;
+package Co.edu.poli.actividad1.model;
+
+import java.io.Serializable;
 
 /**
  * Clase que representa un país dentro del sistema de medicamentos.
@@ -8,7 +10,9 @@ package co.edu.poli.actividad3.model;
  * 
  * @author Nicolas
  */
-public class Pais {
+public class Pais implements Serializable {
+
+    private static final long serialVersionUID = 1L; // control de versión
 
     /** Identificador único del país */
     private String idPais;
@@ -28,7 +32,7 @@ public class Pais {
         this.nombre = nombre;
     }
 
-    // ================== Getters & Setters ==================
+
 
     public String getIdPais() {
         return idPais;
@@ -46,7 +50,7 @@ public class Pais {
         this.nombre = nombre;
     }
 
-    //  toString 
+  
     @Override
     public String toString() {
         return "Pais [idPais=" + idPais + ", nombre=" + nombre + "]";
