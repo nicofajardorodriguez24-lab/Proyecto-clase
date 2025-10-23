@@ -1,4 +1,4 @@
-package co.edu.poli.actividad3.model;
+package Co.edu.poli.actividad1.model;
 
 /**
  * Clase que representa un medicamento analgesico
